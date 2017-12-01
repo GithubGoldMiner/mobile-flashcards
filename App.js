@@ -13,9 +13,8 @@ import Result from './Components/Result';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { reducer } from './reducers/index';
-import { Provider } from 'react-redux'
-
-const store = createStore(reducer, applyMiddleware(thunk));
+import { Provider } from 'react-redux';
+import { setLocalNotification } from './API/FlashcardsAPI';
 
 const DeckStack = StackNavigator({
     Decks: {
@@ -56,8 +55,12 @@ const Tabs = TabNavigator({
     }
 });
 
-export default class App extends React.Component {
+const store = createStore(reducer, applyMiddleware(thunk));
 
+export default class App extends React.Component {
+    componentDidMount() {
+        setLocalNotification();
+    }
     render() {
         return (
             <Provider store={store}>

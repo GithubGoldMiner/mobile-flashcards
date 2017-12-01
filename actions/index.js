@@ -57,7 +57,6 @@ const createNewDeckFinished = (newDeck) => {
 
 export const createNewDeck = (deckTitle, id) => {
     return (dispatch) => {
-        console.log(id);
         dispatch(createNewDeckStart());
         saveDeckTitle(deckTitle, id).then((res) => {
             dispatch(createNewDeckFinished({...res, id: id, key: id}));

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { getDeck } from '../API/FlashcardsAPI';
+import { getDeck, clearLocalNotification, setLocalNotification } from '../API/FlashcardsAPI';
 import { StackNavigator } from 'react-navigation';
 import { Text, Badge, Button } from 'react-native-elements'
 import { connect } from 'react-redux';
@@ -22,7 +22,9 @@ const style = StyleSheet.create({
 class DeckDetail extends Component {
 
     componentDidMount() {
-        this.props.getDeckDetail(this.props.navigation.state.params.id);
+        if(Object.keys(this.props.activeDeck).length === 0){
+            this.props.getDeckDetail(this.props.navigation.state.params.id);
+        }
     }
 
     render() {
@@ -32,7 +34,7 @@ class DeckDetail extends Component {
                 {
                     !this.props.activeDeck || Object.keys(this.props.activeDeck) === 0
                     ?null
-                    :<View>
+                    :<View style={style.container}>
                         <Text h1>
                             {this.props.activeDeck.title}
                         </Text>
@@ -54,7 +56,7 @@ class DeckDetail extends Component {
                         <Button 
                             buttonStyle={style.buttonStyle}
                             disabled={!(this.props.activeDeck.questions && this.props.activeDeck.questions.length > 0)}
-                            onPress={() => {this.props.navigation.navigate('Quiz', { id: this.props.navigation.state.params.id, index: 0, correct: 0})}}
+                            onPress={() => {clearLocalNotification().then(setLocalNotification()) ;this.props.navigation.navigate('Quiz', { id: this.props.navigation.state.params.id, index: 0, correct: 0})}}
                             title='Start a Quiz'
                             borderRadius={10}
                             backgroundColor="green"

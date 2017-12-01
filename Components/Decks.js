@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, FlatList, TouchableOpacity, Animated } from 'react-native';
 import { getDecks } from '../API/FlashcardsAPI';
 import { StackNavigator } from 'react-navigation';
 import { DeckDetail } from './DeckDetail';
 import { Text, Badge } from 'react-native-elements'
 import { connect } from 'react-redux';
 import { fetchDecks } from "../actions/index";
+
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
+
 const styles = StyleSheet.create({
     container: {
         height: 200,
@@ -31,6 +34,7 @@ class Decks extends Component {
     
     state = {
         decks: [],
+        animatedValue: new Animated.Value(0)
     }
 
     componentDidMount() {
@@ -38,6 +42,11 @@ class Decks extends Component {
     }
 
     render() {
+        let translateY = this.state.animatedValue.interpolate({
+			inputRange: [0, 180],
+			outputRange: [0, -180],
+			extrapolate: 'clamp',
+		});
         if (Object.keys(this.state.decks) === 0){
             return (
                 <View>
@@ -48,7 +57,7 @@ class Decks extends Component {
             )
         } else {
             return (
-                <FlatList 
+                <AnimatedFlatList 
                     data={this.props.decks}
                     renderItem={({item}) => 
                         <TouchableOpacity key={item.id} style={styles.container} onPress={() => { this.props.navigation.navigate('DeckDetail', {id: item.id})}}>

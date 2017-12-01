@@ -16,7 +16,6 @@ export const reducer = (state=initialState, action) => {
             return state;
         case 'CREATE_NEW_DECK_FINISHED':
             let tempList = state.deckLists.concat(action.deck);
-            console.log('from action', action.deck)
             return {
                 activeDeck: action.deck,
                 deckLists: tempList,
