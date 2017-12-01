@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { View, StyleSheet, TextInput, Dimensions } from 'react-native';
 import { saveDeckTitle } from '../API/FlashcardsAPI';
 import { Text, Button, FormInput } from 'react-native-elements'
+import { connect } from 'react-redux';
+import { createNewDeck } from '../actions/index';
+const uuidv1 = require('uuid/v1');
 
 const style = StyleSheet.create({
     inputContainer: {
@@ -10,18 +13,19 @@ const style = StyleSheet.create({
     },
 
     submitButtonStyle: {
+        width: 240,
         marginTop: 15,
     }
 })
 
-
-export class NewDeck extends Component {
+class NewDeck extends Component {
     state = {
         title: '',
     };
 
     handleSubmitPress = () => {
-        saveDeckTitle(this.state.title).then(() => {this.props.navigation.navigate('DecksList')});
+        const id = uuidv1();
+        Promise.all([this.props.createDeck(this.state.title, id)]).then(() => {this.props.navigation.navigate('DeckDetail', {id: id})});
     }
 
     render() {
@@ -37,7 +41,7 @@ export class NewDeck extends Component {
                 <Button
                     buttonStyle={style.submitButtonStyle}
                     onPress={this.handleSubmitPress}
-                    title='Submit'
+                    title='Create Deck'
                     borderRadius={10}
                     backgroundColor="green"
                 />
@@ -45,3 +49,19 @@ export class NewDeck extends Component {
         );
     }
 }
+
+const mapStateToProps = (state) => {
+    return {
+        
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        createDeck: (title, id) => {
+            dispatch(createNewDeck(title, id));
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(NewDeck);

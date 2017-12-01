@@ -11,16 +11,18 @@ export const getDecks = () => {
     });
 }
 
-export const saveDeckTitle = (title) => {
+export const saveDeckTitle = (title, id) => {
     return AsyncStorage.getItem('FlashCards').then((results) => {
         
         const data = !!results? JSON.parse(results): {};
         data[title] = {
-            id: uuidv1(),
+            id: id,
             title: title,
             questions: [],
+            key: id
         }
         AsyncStorage.mergeItem('FlashCards', JSON.stringify(data));
+        return data[title];
     })
 }
 
@@ -39,11 +41,15 @@ export const addCardToDeck = (id, card) => {
     return AsyncStorage.getItem('FlashCards').then((results) => {
         const result = JSON.parse(results);
         const keyArray = Object.keys(result);
+
+        let activeDeck;
         keyArray.map((key) => {
             if (result[key].id === id) {
                 result[key].questions.push(card);
+                activeDeck = result[key];
             }
         });
         AsyncStorage.setItem('FlashCards', JSON.stringify(result));
+        return activeDeck;
     })
 }

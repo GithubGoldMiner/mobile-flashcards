@@ -2,11 +2,20 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { StackNavigator, TabNavigator } from 'react-navigation';
 
-import { Decks } from './Components/Decks';
-import { DeckDetail } from './Components/DeckDetail';
-import { NewDeck } from './Components/NewDeck';
+import Decks from './Components/Decks';
+import DeckDetail from './Components/DeckDetail';
+import NewDeck from './Components/NewDeck';
 import { MyStatusBar } from './Components/MyStatusBar';
-import { AddCardToDeck } from './Components/AddCardToDeck';
+import AddCardToDeck from './Components/AddCardToDeck';
+import Quiz from './Components/Quiz';
+import Result from './Components/Result';
+
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
+import { reducer } from './reducers/index';
+import { Provider } from 'react-redux'
+
+const store = createStore(reducer, applyMiddleware(thunk));
 
 const DeckStack = StackNavigator({
     Decks: {
@@ -19,6 +28,14 @@ const DeckStack = StackNavigator({
     AddCardToDeck: {
         screen: AddCardToDeck,
         path: 'deckDetails/addCard/:id',
+    },
+    Quiz: {
+        screen: Quiz,
+        path: 'quiz/:index',
+    },
+    Result: {
+        screen: Result,
+        path: 'result'
     }
 }, {
     headerMode: 'none',
@@ -43,10 +60,12 @@ export default class App extends React.Component {
 
     render() {
         return (
-            <View style={styles.container}>
-                <MyStatusBar />
-                <Tabs />
-            </View>
+            <Provider store={store}>
+                <View style={styles.container}>
+                    <MyStatusBar />
+                    <Tabs />
+                </View>
+            </Provider>
         );
     }
 }

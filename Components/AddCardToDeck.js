@@ -4,7 +4,8 @@ import { StackNavigator } from 'react-navigation';
 import { addCardToDeck } from '../API/FlashcardsAPI';
 import { DeckDetail } from './DeckDetail';
 import { FormLabel, FormInput, Button } from 'react-native-elements'
-
+import { createCard } from '../actions/index';
+import { connect } from 'react-redux';
 
 const style = StyleSheet.create({
     container: {
@@ -28,7 +29,11 @@ export class AddCardToDeck extends Component {
     };
 
     handleAddCard = () => {
-        addCardToDeck(this.props.navigation.state.params.id, {question: this.state.question, answer: this.state.answer}).then(() => {this.props.navigation.goBack()})
+        this.props.createCardToDeck(this.props.navigation.state.params.id, {
+            question: this.state.question, 
+            answer: this.state.answer
+        });
+        this.props.navigation.goBack()
     }
 
     render() {
@@ -57,3 +62,19 @@ export class AddCardToDeck extends Component {
         );
     }
 }
+
+const mapStateToProps = (state) => {
+    return {
+
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        createCardToDeck: (id, card) => {
+            dispatch(createCard(id, card));
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddCardToDeck);

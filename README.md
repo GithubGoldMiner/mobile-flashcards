@@ -1,7 +1,11 @@
-## Install and run:
+## How to install and run:
 1. npm install
 2. npm start
 3. enjoy
+
+## Device tested:
+1. Nexus 5X API 26
+2. Iphone 6 IOS 10
 
 This project was bootstrapped with [Create React Native App](https://github.com/react-community/create-react-native-app).
 

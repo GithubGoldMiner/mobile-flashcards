@@ -4,7 +4,8 @@ import { getDecks } from '../API/FlashcardsAPI';
 import { StackNavigator } from 'react-navigation';
 import { DeckDetail } from './DeckDetail';
 import { Text, Badge } from 'react-native-elements'
-
+import { connect } from 'react-redux';
+import { fetchDecks } from "../actions/index";
 const styles = StyleSheet.create({
     container: {
         height: 200,
@@ -22,7 +23,7 @@ const styles = StyleSheet.create({
     }
 })
 
-export class Decks extends Component {
+class Decks extends Component {
  
     static navigationOptions = {
         title: 'Decks',
@@ -33,17 +34,7 @@ export class Decks extends Component {
     }
 
     componentDidMount() {
-        getDecks().then((res) => {
-            const result = Object.keys(res).map((key) => {
-                return {
-                    ...res[key],
-                    key: key,
-                }
-            });
-            this.setState({
-                decks: result,
-            }); 
-        });
+        this.props.getDeckList();
     }
 
     render() {
@@ -58,9 +49,9 @@ export class Decks extends Component {
         } else {
             return (
                 <FlatList 
-                    data={this.state.decks}
+                    data={this.props.decks}
                     renderItem={({item}) => 
-                        <TouchableOpacity style={styles.container} onPress={() => { this.props.navigation.navigate('DeckDetail', {id: item.id})}}>
+                        <TouchableOpacity key={item.id} style={styles.container} onPress={() => { this.props.navigation.navigate('DeckDetail', {id: item.id})}}>
                             <Text h1>{item.title}</Text>
                             <Badge
                                 containerStyle={{ backgroundColor: 'violet'}}
@@ -74,5 +65,18 @@ export class Decks extends Component {
     }
 }
 
+const mapStateToProps = (state) => {
+    return {
+        decks: state.deckLists,
+    }
+}
 
-  
+const mapDispatchToProps = (dispatch) => {
+    return {
+        getDeckList: () => {
+            dispatch(fetchDecks());
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Decks);
